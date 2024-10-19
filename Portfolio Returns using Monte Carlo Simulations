@@ -1,0 +1,118 @@
+!pip install yfinance
+
+import yfinance as yf
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define the stock ticker and period for historical data
+ticker = 'AAPL'  # Replace with any ticker you want to analyze
+data = yf.download(ticker, start='2022-01-01', end='2024-01-01')
+
+# Calculate daily returns
+data['Returns'] = data['Adj Close'].pct_change().dropna()
+
+# Portfolio setup
+initial_portfolio_value = 100000  # Assume the portfolio is worth $100,000
+mean_return = data['Returns'].mean()  # Mean daily return
+volatility = data['Returns'].std()  # Daily volatility (standard deviation)
+
+# Monte Carlo simulation parameters
+num_simulations = 10000
+days = 1  # 1-day horizon
+
+# Simulate portfolio returns
+simulated_returns = np.random.normal(mean_return, volatility, num_simulations)
+
+# Simulate portfolio value changes
+portfolio_value_changes = initial_portfolio_value * simulated_returns
+
+# Calculate VaR at 95% and 99% confidence levels
+VaR_95 = np.percentile(portfolio_value_changes, 5)
+VaR_99 = np.percentile(portfolio_value_changes, 1)
+
+# Output results
+print(f"1-Day VaR at 95% confidence level: ${abs(VaR_95):.2f}")
+print(f"1-Day VaR at 99% confidence level: ${abs(VaR_99):.2f}")
+
+# Plot the distribution of portfolio changes
+plt.hist(portfolio_value_changes, bins=50, alpha=0.75, color='b')
+
+# Highlight VaR thresholds
+plt.axvline(x=VaR_95, color='r', linestyle='--', label=f'VaR 95%: ${abs(VaR_95):.2f}')
+plt.axvline(x=VaR_99, color='g', linestyle='--', label=f'VaR 99%: ${abs(VaR_99):.2f}')
+
+plt.title('Distribution of Portfolio Returns and VaR')
+plt.xlabel('Portfolio Value Change ($)')
+plt.ylabel('Frequency')
+plt.legend()
+plt.show()
+
+
+returns = data['Returns'].dropna()
+
+# Sort returns in ascending order
+sorted_returns = np.sort(returns)
+
+# Calculate portfolio value changes
+portfolio_value_changes = initial_portfolio_value * sorted_returns
+
+# Calculate VaR at 95% and 99% confidence levels based on historical returns
+VaR_95 = np.percentile(portfolio_value_changes, 5)
+VaR_99 = np.percentile(portfolio_value_changes, 1)
+
+# Output results
+print(f"1-Day Historical VaR at 95% confidence level: ${abs(VaR_95):.2f}")
+print(f"1-Day Historical VaR at 99% confidence level: ${abs(VaR_99):.2f}")
+
+# Plot the distribution of portfolio value changes
+plt.hist(portfolio_value_changes, bins=50, alpha=0.75, color='b')
+
+# Highlight VaR thresholds
+plt.axvline(x=VaR_95, color='r', linestyle='--', label=f'VaR 95%: ${abs(VaR_95):.2f}')
+plt.axvline(x=VaR_99, color='g', linestyle='--', label=f'VaR 99%: ${abs(VaR_99):.2f}')
+
+plt.title('Distribution of Portfolio Returns (Historical) and VaR')
+plt.xlabel('Portfolio Value Change ($)')
+plt.ylabel('Frequency')
+plt.legend()
+plt.show()
+
+
+# Calculate daily returns
+data['Returns'] = data['Adj Close'].pct_change().dropna()
+
+# Portfolio setup
+initial_portfolio_value = 100000  # Assume the portfolio is worth $100,000
+mean_return = data['Returns'].mean()  # Mean daily return
+volatility = data['Returns'].std()  # Daily volatility (standard deviation)
+
+# Monte Carlo simulation parameters
+num_simulations = 10000
+days = 1  # 1-day horizon
+
+# Simulate portfolio returns
+simulated_returns = np.random.normal(mean_return, volatility, num_simulations)
+
+# Simulate portfolio value changes
+portfolio_value_changes = initial_portfolio_value * simulated_returns
+
+# Calculate VaR at 95% and 99% confidence levels
+VaR_95 = np.percentile(portfolio_value_changes, 5)
+VaR_99 = np.percentile(portfolio_value_changes, 1)
+
+# Output results
+print(f"1-Day VaR at 95% confidence level: ${abs(VaR_95):.2f}")
+print(f"1-Day VaR at 99% confidence level: ${abs(VaR_99):.2f}")
+
+# Plot the distribution of portfolio changes
+plt.hist(portfolio_value_changes, bins=50, alpha=0.75, color='b')
+
+# Highlight VaR thresholds
+plt.axvline(x=VaR_95, color='r', linestyle='--', label=f'VaR 95%: ${abs(VaR_95):.2f}')
+plt.axvline(x=VaR_99, color='g', linestyle='--', label=f'VaR 99%: ${abs(VaR_99):.2f}')
+
+plt.title('Distribution of Portfolio Returns and VaR')
+plt.xlabel('Portfolio Value Change ($)')
+plt.ylabel('Frequency')
+plt.legend()
+plt.show()
