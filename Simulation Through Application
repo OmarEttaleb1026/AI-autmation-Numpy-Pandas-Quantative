@@ -1,0 +1,77 @@
+#Managing a fund which has two trading strategies - simulating through application which one is better
+
+import main 
+import mathplotlib as plt 
+import numpy as np
+
+
+# let's calculate the expected value and variance for each strategy
+# FOR A SINGLE TRIAL
+strategy_a_ev = 0.5 * 0.8 + 0.5 * 1.5
+strategy_a_var = 0.5 * (0.8 - strategy_a_ev)**2 + 0.5 * (1.5 - strategy_a_ev)**2
+print(f"Strategy A: EV = {strategy_a_ev}, Var = {strategy_a_var}")
+
+strategy_b_ev = 0.9 * 0.95 + 0.1 * 2.95
+strategy_b_var = 0.9 * (0.95 - strategy_b_ev)**2 + 0.1 * (2.95 - strategy_b_ev)**2
+print(f"Strategy B: EV = {strategy_b_ev}, Var = {strategy_b_var}")
+
+# let's simulate trials
+n_trials = 10000
+n_days = 30
+strategy_a_results = []
+strategy_a_all_returns = []
+strategy_b_results = []
+strategy_b_all_returns = []
+
+for i in range(n_trials):
+    strategy_a_returns = [1]
+    strategy_b_returns = [1]
+    for j in range(n_days):
+        strategy_a_returns.append(
+            strategy_a_returns[-1] * np.random.choice([0.8, 1.5], p=[0.5, 0.5]))
+        
+        strategy_b_returns.append(
+            strategy_b_returns[-1] * np.random.choice([0.95, 2.95], p=[0.9, 0.1]))
+
+    strategy_a_results.append(strategy_a_returns)
+    strategy_b_results.append(strategy_b_returns)
+    strategy_a_all_returns.append(strategy_a_returns[-1])
+    strategy_b_all_returns.append(strategy_b_returns[-1])
+
+# calculate average final returns
+strategy_a_avg = np.mean(strategy_a_all_returns)
+strategy_b_avg = np.mean(strategy_b_all_returns)
+
+# output results
+print(f"Strategy A: Average final return = {strategy_a_avg}")
+print(f"Strategy B: Average final return = {strategy_b_avg}")
+# median
+print(f"Strategy A: Median final return = {np.median(strategy_a_all_returns)}")
+print(f"Strategy B: Median final return = {np.median(strategy_b_all_returns)}")
+# histograms
+plt.figure(figsize=(20, 10))
+plt.hist(strategy_a_all_returns, bins=100, label='Strategy A')
+# plt.hist(strategy_b_all_returns, bins=50, alpha=0.5, label='Strategy B')
+plt.legend()
+plt.show()
+
+plt.figure(figsize=(20, 10))
+# plt.hist(strategy_a_all_returns, bins=50, alpha=0.5, label='Strategy A')
+plt.hist(strategy_b_all_returns, bins=100, label='Strategy B')
+plt.legend()
+plt.show()
+
+# histogram for bottom 50% of returns
+plt.figure(figsize=(20, 10))
+plt.hist(sorted(strategy_a_all_returns)[:n_trials//2], bins=100, label='Strategy A')
+plt.hist(sorted(strategy_b_all_returns)[:n_trials//2], bins=100, label='Strategy B')
+plt.legend()
+plt.show()
+
+# plot 10 trials
+plt.figure(figsize=(20, 10))
+for i in range(4):
+    plt.plot(strategy_a_results[i], label=f"Trial A {i}")
+    plt.plot(strategy_b_results[i], label=f"Trial B {i}")
+plt.title("Strategy A&B Returns")
+plt.legend()
